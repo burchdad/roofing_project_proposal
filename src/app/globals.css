@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+:root {
+  --background: #030707;
+  --foreground: #f5fbfb;
+  --muted: #8aa1a4;
+  --aqua: #27f2df;
+  --cyan: #5cc8ff;
+  --teal: #00a99d;
+  --charcoal: #0a1214;
+  --panel: rgba(9, 22, 25, 0.72);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(39, 242, 223, 0.16), transparent 34rem),
+    radial-gradient(circle at 88% 22%, rgba(92, 200, 255, 0.12), transparent 38rem),
+    linear-gradient(180deg, #020404 0%, #061013 42%, #030707 100%);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans);
+  min-height: 100vh;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.32;
+  background-image:
+    linear-gradient(rgba(245, 251, 251, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 251, 251, 0.035) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(to bottom, black, transparent 88%);
+}
+
+::selection {
+  background: rgba(39, 242, 223, 0.28);
+}
+
+.proposal-shell {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.light-sweep {
+  background: linear-gradient(110deg, transparent, rgba(39, 242, 223, 0.12), transparent);
+  animation: sweep 8s ease-in-out infinite;
+}
+
+@keyframes sweep {
+  0% {
+    transform: translateX(-70%) skewX(-18deg);
+  }
+  55%,
+  100% {
+    transform: translateX(140%) skewX(-18deg);
+  }
+}
+
+.glass-line {
+  border: 1px solid rgba(245, 251, 251, 0.11);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025));
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(20px);
+}
+
+.aqua-text {
+  background: linear-gradient(90deg, #f5fbfb, #27f2df 45%, #5cc8ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.section-pad {
+  padding: 7rem 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .section-pad {
+    padding: 5rem 1rem;
+  }
+}
