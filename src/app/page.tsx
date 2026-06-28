@@ -127,8 +127,8 @@ const priorities: Priority[] = [
 ];
 
 const recommendedPaidCampaignAmount = 3300;
-const clientPortalCreateUrl = process.env.NEXT_PUBLIC_CLIENT_PORTAL_CREATE_URL || "/portal/create-account";
-const clientPortalSignInUrl = process.env.NEXT_PUBLIC_CLIENT_PORTAL_SIGN_IN_URL || "/portal/sign-in";
+const clientPortalBaseUrl =
+  process.env.NEXT_PUBLIC_CLIENT_PORTAL_BASE_URL || "https://www.ghostai.solutions/client-portal";
 
 const defaultPreferences: Record<string, Preference> = {
   photo: "want",
@@ -222,6 +222,7 @@ export default function Home() {
   });
   const [sendState, setSendState] = useState<SendState>("idle");
   const [sendMessage, setSendMessage] = useState("");
+  const [approvalId, setApprovalId] = useState("");
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 24, mass: 0.2 });
 
@@ -255,6 +256,21 @@ export default function Home() {
       : wanted.some((item) => item.id === "ads")
         ? "Campaign support plan"
         : "Visibility and proof plan";
+
+  const clientPortalCreateUrl = useMemo(() => {
+    const params = new URLSearchParams();
+    if (approvalId) params.set("invite", approvalId);
+    if (signForm.email.trim()) params.set("email", signForm.email.trim());
+    const query = params.toString();
+    return `${clientPortalBaseUrl.replace(/\/+$/, "")}/create-account${query ? `?${query}` : ""}`;
+  }, [approvalId, signForm.email]);
+
+  const clientPortalSignInUrl = useMemo(() => {
+    const params = new URLSearchParams();
+    if (signForm.email.trim()) params.set("email", signForm.email.trim());
+    const query = params.toString();
+    return `${clientPortalBaseUrl.replace(/\/+$/, "")}/sign-in${query ? `?${query}` : ""}`;
+  }, [signForm.email]);
 
   function setPreference(id: string, preference: Preference) {
     setPreferences((current) => ({ ...current, [id]: preference }));
@@ -306,6 +322,7 @@ export default function Home() {
         throw new Error(result.error || "Unable to send signed proposal.");
       }
 
+      setApprovalId(result.approvalId || "");
       setSendState("sent");
       setSendMessage("");
     } catch (error) {
@@ -629,7 +646,7 @@ export default function Home() {
               <h2 className="mt-3 text-4xl font-semibold leading-tight text-white">Thank you. Your scope is confirmed.</h2>
               <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#a9bdc0]">
                 A signed copy has been emailed to you and Ghost AI Solutions. Your invoice will be sent out soon, and
-                we will create your client portal for onboarding, billing, and project next steps.
+                you can create or access your client portal for onboarding, billing, and project next steps.
               </p>
               <div className="mt-7 rounded-md border border-white/10 bg-black/20 p-4">
                 <p className="text-sm text-[#a9bdc0]">Approved monthly scope</p>
