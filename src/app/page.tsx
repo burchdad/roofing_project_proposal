@@ -67,14 +67,14 @@ const priorities: Priority[] = [
     short: "Premium aerial proof of roofing work",
     detail: "Aerial capture that shows scale, roof condition, craftsmanship, and finished property context.",
     icon: Radio,
-    proof: "High-authority visuals that make Project One look bigger, sharper, and more trusted.",
+    proof: "High-authority visuals that make your work look bigger, sharper, and more trusted.",
     price: 1250,
   },
   {
     id: "local",
     title: "Local Search",
     short: "Google visibility and local authority",
-    detail: "Lightweight Google Business Profile and local visibility support built from the field content already being produced.",
+    detail: "Lightweight Google Business Profile and local visibility support built from the field content we capture for you.",
     icon: MapPin,
     proof: "An included visibility layer, not a standalone SEO retainer.",
     price: 150,
@@ -92,7 +92,7 @@ const priorities: Priority[] = [
     id: "social",
     title: "Social Distribution",
     short: "Turn field work into market presence",
-    detail: "A practical publishing rhythm that keeps Project One visible without burdening the internal team.",
+    detail: "A practical publishing rhythm that keeps you visible without burdening your internal team.",
     icon: Megaphone,
     proof: "Consistent proof that the company is active, professional, and trusted locally.",
     price: 900,
@@ -110,9 +110,9 @@ const priorities: Priority[] = [
     id: "geo",
     title: "AI Search Visibility",
     short: "GEO content for emerging search behavior",
-    detail: "Included GEO support that structures selected project proof for AI search and answer engines.",
+    detail: "Included GEO support that structures your selected project proof for AI search and answer engines.",
     icon: Globe2,
-    proof: "A lower included add-on because GEO is already part of the broader content system.",
+    proof: "A lighter included layer because GEO support is already part of the broader content system.",
     price: 150,
   },
   {
@@ -149,17 +149,17 @@ const roadmapBase = [
   {
     label: "Month 1",
     title: "Decide The Scope",
-    copy: "Confirm priorities, build the shoot calendar, audit existing assets, and set the first campaign lane.",
+    copy: "Confirm your priorities, build the shoot calendar, review existing assets, and set the first campaign lane.",
   },
   {
     label: "Month 2",
     title: "Capture The Proof",
-    copy: "Produce field media, package project stories, publish priority content, and support sales follow-up.",
+    copy: "Produce field media, package project stories, publish priority content, and support your sales follow-up.",
   },
   {
     label: "Month 3",
     title: "Amplify What Works",
-    copy: "Scale the strongest creative, improve local visibility, review lead quality, and refine the next month.",
+    copy: "Scale the strongest creative, improve local visibility, review lead quality, and plan the next month.",
   },
 ];
 
@@ -320,7 +320,7 @@ export default function Home() {
             href="#investment"
             className="inline-flex h-10 items-center gap-2 rounded-md bg-white px-4 text-sm font-semibold text-[#061013] transition hover:bg-[#27f2df]"
           >
-            Review Fit
+            Review Scope
             <ArrowRight size={16} />
           </a>
         </div>
@@ -335,11 +335,11 @@ export default function Home() {
                 Project One Roofing proposal
               </p>
               <h1 className="mt-7 max-w-4xl text-5xl font-semibold leading-[1.03] text-white md:text-7xl">
-                Build the growth support plan around what Project One actually wants.
+                Choose the growth support that matches your priorities.
               </h1>
               <p className="mt-7 max-w-2xl text-lg leading-8 text-[#b8cacc]">
-                Their sales team exists. Their tech team exists. Ghost should fill the gap around premium field
-                capture, proof, distribution, and campaign support.
+                Your sales team is already in place. Your tech team is already in place. Ghost fills the gap around
+                premium field capture, trust-building proof, distribution, and campaign support.
               </p>
               <div className="mt-10 grid max-w-2xl gap-3 sm:grid-cols-3">
                 {[
@@ -365,7 +365,7 @@ export default function Home() {
               <div className="flex flex-col gap-5 border-b border-white/10 pb-5 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#27f2df]">Partnership Builder</p>
-                  <h2 className="mt-2 text-2xl font-semibold text-white">Priority fit</h2>
+                  <h2 className="mt-2 text-2xl font-semibold text-white">Select your priorities</h2>
                 </div>
                 <div className="relative h-16 w-16 overflow-hidden rounded-md border border-[#27f2df]/30 bg-black">
                   <Image src="/ghost-ai-logo.png" alt="Ghost AI Solutions logo" fill sizes="64px" className="object-cover" priority />
@@ -420,9 +420,9 @@ export default function Home() {
 
       <section id="scope" className="section-pad bg-black/20">
         <SectionHeading
-          eyebrow="Recommended Scope"
+          eyebrow="Your Selected Scope"
           title={planMode}
-          body="The proposal should feel selected, not dumped on them. These are the pieces currently marked as useful for Project One."
+          body="Start with the services that matter most now. Add or remove items to shape the first phase around your priorities."
         />
         <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <Reveal>
@@ -450,9 +450,9 @@ export default function Home() {
 
           <Reveal delay={0.08}>
             <aside className="sticky top-28 rounded-lg border border-[#27f2df]/25 bg-[#061314] p-6 shadow-[0_0_80px_rgba(39,242,223,0.1)]">
-              <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#27f2df]">Proposal Logic</p>
+              <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#27f2df]">Why This Works</p>
               <h3 className="mt-3 text-3xl font-semibold leading-tight text-white">
-                Build around proof. Do not sell them tools they already have.
+                Built around proof, not tools you already have.
               </h3>
               <div className="mt-7 grid gap-4">
                 {wanted.slice(0, 4).map((item) => (
@@ -464,7 +464,7 @@ export default function Home() {
               </div>
               {passed.length > 0 ? (
                 <div className="mt-7 border-t border-white/10 pt-5">
-                  <p className="text-sm font-medium text-white">Not emphasized right now</p>
+                  <p className="text-sm font-medium text-white">Not prioritized right now</p>
                   <p className="mt-2 text-sm leading-6 text-[#8aa1a4]">
                     {passed.map((item) => item.title).join(", ")}
                   </p>
@@ -477,14 +477,14 @@ export default function Home() {
 
       <section className="section-pad">
         <SectionHeading
-          eyebrow="Operating Model"
-          title="Ghost supports the teams Project One already has."
-          body="This should not read like a generic agency takeover. The pitch is to supply better assets, better visibility, and better proof for the people already selling and operating the business."
+          eyebrow="How Ghost Fits"
+          title="Ghost supports the teams you already have."
+          body="Your internal teams stay focused on sales, operations, and systems. We support your team with better assets, better visibility, and better proof in market."
         />
         <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-3">
           {[
-            ["Sales team", "Gets project proof, credibility clips, testimonials, and follow-up assets."],
-            ["Tech team", "Keeps owning internal systems while Ghost feeds the market-facing layer."],
+            ["Sales team", "Receives project proof, credibility clips, testimonials, and follow-up assets."],
+            ["Tech team", "Keeps ownership of internal systems while Ghost supports the market-facing layer."],
             ["Leadership", "Gets one clean monthly investment, reporting, and a practical growth rhythm."],
           ].map(([title, copy], index) => (
             <Reveal key={title} delay={index * 0.06}>
@@ -500,8 +500,8 @@ export default function Home() {
       <section id="roadmap" className="section-pad bg-[#020606]/80">
         <SectionHeading
           eyebrow="90 Day Path"
-          title="Small enough to approve. Strong enough to matter."
-          body="The first phase should prove value through actual assets in market, not a huge abstract marketing plan."
+          title="A focused first phase with room to grow."
+          body="The first 90 days are built to prove value through real assets in market, not a huge abstract marketing plan."
         />
         <div className="mx-auto grid max-w-7xl gap-4 lg:grid-cols-3">
           {roadmapBase.map((phase, index) => (
@@ -528,7 +528,7 @@ export default function Home() {
         <SectionHeading
           eyebrow="Investment"
           title="One partnership, one monthly number, selected scope."
-          body="The number stays simple. The scope can flex around what Project One wants to prioritize first."
+          body="The number stays simple. Your scope can flex around the services you want to prioritize first."
         />
         <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[0.85fr_1.15fr]">
           <Reveal>
@@ -551,7 +551,7 @@ export default function Home() {
                   {wanted.some((item) => item.id === "ads") ? "Advertising spend included." : "Paid campaigns are not selected."}
                 </p>
                 <p className="mt-2 text-sm leading-6 text-[#a9bdc0]">
-                  The total updates as services are added or removed from the starting scope.
+                  Your total updates as services are added or removed from the starting scope.
                 </p>
               </div>
               <button
@@ -562,15 +562,15 @@ export default function Home() {
                 Approve Proposal
               </button>
               <p className="mt-4 text-sm leading-6 text-[#8aa1a4]">
-                Approval saves the agreed scope and sends both parties a copy. Billing, payment, and onboarding move into
-                the client portal after acceptance.
+                Approval saves your selected scope and sends a copy to you and Ghost. Billing, payment, and onboarding
+                move into your client portal after acceptance.
               </p>
             </div>
           </Reveal>
 
           <Reveal delay={0.08}>
             <div className="rounded-lg border border-white/10 bg-white/[0.035] p-6">
-              <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#27f2df]">Current Fit</p>
+              <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#27f2df]">Selected Scope</p>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 {wanted.map((item) => (
                   <div key={item.id} className="flex items-center justify-between gap-3 rounded-md border border-white/10 bg-black/20 px-4 py-3">
@@ -597,11 +597,11 @@ export default function Home() {
           <div className="relative mx-auto max-w-4xl text-center">
             <p className="font-mono text-xs uppercase tracking-[0.28em] text-[#27f2df]">Next Step</p>
             <h2 className="mt-5 text-4xl font-semibold leading-tight text-white md:text-7xl">
-              Start with the priorities they choose, then earn the right to expand.
+              Approve the starting scope, then launch from your client portal.
             </h2>
             <p className="mx-auto mt-7 max-w-2xl text-lg leading-8 text-[#b8cacc]">
-              Once the proposal is approved, Ghost creates the Project One client portal for onboarding, billing,
-              payment, and project management.
+              Once this proposal is approved, Ghost creates your client portal for onboarding, billing, payment, and
+              project management.
             </p>
             <button
               type="button"
@@ -629,8 +629,8 @@ export default function Home() {
                 <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#27f2df]">Digital Approval</p>
                 <h2 className="mt-2 text-3xl font-semibold text-white">Confirm selected scope</h2>
                 <p className="mt-2 text-sm leading-6 text-[#a9bdc0]">
-                  This saves the signed proposal and emails both sides. Billing and payment happen later inside the
-                  client portal.
+                  This saves your signed proposal and emails a copy to you and Ghost. Billing and payment happen later
+                  inside your client portal.
                 </p>
               </div>
               <button
@@ -722,7 +722,7 @@ export default function Home() {
                 disabled={sendState === "sending"}
                 className="h-12 w-full rounded-md bg-[#27f2df] px-4 font-semibold text-[#041010] transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {sendState === "sending" ? "Sending..." : "Send Signed Approval"}
+                {sendState === "sending" ? "Sending..." : "Approve Selected Scope"}
               </button>
             </div>
             {sendMessage ? (
