@@ -171,15 +171,6 @@ function formatCurrency(amount: number) {
   }).format(amount);
 }
 
-function escapeHtml(value: string) {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
 function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   return (
     <motion.div
@@ -254,108 +245,6 @@ export default function Home() {
 
   function setPreference(id: string, preference: Preference) {
     setPreferences((current) => ({ ...current, [id]: preference }));
-  }
-
-  function createInvoiceHtml() {
-    const invoiceDate = new Date().toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-    const rows = wanted
-      .map(
-        (item) => `
-          <tr>
-            <td>
-              <strong>${escapeHtml(item.title)}</strong>
-              <span>${escapeHtml(item.short)}</span>
-            </td>
-            <td>${formatCurrency(item.price)}</td>
-          </tr>
-        `,
-      )
-      .join("");
-
-    return `<!doctype html>
-      <html>
-        <head>
-          <meta charset="utf-8" />
-          <title>Project One Roofing Invoice</title>
-          <style>
-            body { margin: 0; padding: 48px; background: #f5f7f7; color: #071214; font-family: Arial, sans-serif; }
-            .invoice { max-width: 860px; margin: 0 auto; background: white; border: 1px solid #d8e2e2; padding: 44px; }
-            header { display: flex; justify-content: space-between; gap: 24px; border-bottom: 2px solid #071214; padding-bottom: 28px; }
-            h1 { margin: 0; font-size: 38px; letter-spacing: -0.02em; }
-            h2 { margin: 0 0 8px; font-size: 16px; text-transform: uppercase; letter-spacing: 0.14em; color: #087f78; }
-            p { margin: 4px 0; color: #4d5c60; line-height: 1.5; }
-            table { width: 100%; border-collapse: collapse; margin-top: 36px; }
-            th { text-align: left; border-bottom: 1px solid #cbd8d8; padding: 12px 0; color: #59686b; font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; }
-            th:last-child, td:last-child { text-align: right; }
-            td { border-bottom: 1px solid #e7eeee; padding: 18px 0; vertical-align: top; }
-            td span { display: block; margin-top: 6px; color: #667679; font-size: 13px; }
-            .total { margin-top: 32px; display: flex; justify-content: flex-end; }
-            .total div { min-width: 320px; background: #071214; color: white; padding: 24px; }
-            .total p { color: #a9bdc0; }
-            .total strong { display: block; margin-top: 8px; font-size: 42px; }
-            .note { margin-top: 28px; padding: 18px; background: #e9fbf8; border: 1px solid #abe9df; }
-            .actions { margin: 28px auto 0; max-width: 860px; text-align: right; }
-            button { background: #071214; color: white; border: 0; padding: 12px 18px; cursor: pointer; }
-            @media print { body { background: white; padding: 0; } .invoice { border: 0; } .actions { display: none; } }
-          </style>
-        </head>
-        <body>
-          <main class="invoice">
-            <header>
-              <div>
-                <h2>Ghost AI Solutions</h2>
-                <h1>Monthly Partnership Invoice</h1>
-                <p>Creative capture and marketing amplification for Project One Roofing.</p>
-              </div>
-              <div>
-                <p><strong>Invoice date</strong></p>
-                <p>${invoiceDate}</p>
-                <p><strong>Client</strong></p>
-                <p>Project One Roofing</p>
-              </div>
-            </header>
-            <table>
-              <thead>
-                <tr><th>Selected scope</th><th>Monthly amount</th></tr>
-              </thead>
-              <tbody>${rows}</tbody>
-            </table>
-            <section class="total">
-              <div>
-                <p>Monthly total</p>
-                <strong>${formatCurrency(monthlyTotal)}</strong>
-              </div>
-            </section>
-            <section class="note">
-              <p><strong>Advertising spend is included when Paid Campaigns is selected.</strong></p>
-              <p>This invoice is generated from the live proposal scope selected on the Project One Roofing proposal page.</p>
-            </section>
-          </main>
-          <div class="actions"><button onclick="window.print()">Print or Save PDF</button></div>
-        </body>
-      </html>`;
-  }
-
-  function produceInvoice() {
-    if (wanted.length === 0) {
-      window.alert("Select at least one service before producing an invoice.");
-      return;
-    }
-
-    const invoiceWindow = window.open("", "_blank", "width=980,height=1100");
-    if (!invoiceWindow) {
-      window.alert("Please allow popups to produce the invoice.");
-      return;
-    }
-
-    invoiceWindow.document.open();
-    invoiceWindow.document.write(createInvoiceHtml());
-    invoiceWindow.document.close();
-    invoiceWindow.focus();
   }
 
   function updateSignForm(field: keyof SignForm, value: string) {
@@ -665,22 +554,17 @@ export default function Home() {
                   The total updates as services are added or removed from the starting scope.
                 </p>
               </div>
-              <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                <button
-                  type="button"
-                  onClick={produceInvoice}
-                  className="inline-flex h-12 items-center justify-center rounded-md border border-white/15 px-4 font-semibold text-white transition hover:border-[#27f2df]/60 hover:text-[#27f2df]"
-                >
-                  Produce Invoice
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsSigning(true)}
-                  className="inline-flex h-12 items-center justify-center rounded-md bg-white px-4 font-semibold text-[#061013] transition hover:bg-[#27f2df]"
-                >
-                  Digitally Sign
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() => setIsSigning(true)}
+                className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-md bg-white px-4 font-semibold text-[#061013] transition hover:bg-[#27f2df]"
+              >
+                Approve Proposal
+              </button>
+              <p className="mt-4 text-sm leading-6 text-[#8aa1a4]">
+                Approval saves the agreed scope and sends both parties a copy. Billing, payment, and onboarding move into
+                the client portal after acceptance.
+              </p>
             </div>
           </Reveal>
 
@@ -716,14 +600,15 @@ export default function Home() {
               Start with the priorities they choose, then earn the right to expand.
             </h2>
             <p className="mx-auto mt-7 max-w-2xl text-lg leading-8 text-[#b8cacc]">
-              That feels more honest for Project One Roofing and more valuable for Ghost AI Solutions.
+              Once the proposal is approved, Ghost creates the Project One client portal for onboarding, billing,
+              payment, and project management.
             </p>
             <button
               type="button"
               onClick={() => setIsSigning(true)}
               className="mt-10 inline-flex h-14 items-center justify-center gap-3 rounded-md bg-white px-6 font-semibold text-[#061013] transition hover:bg-[#27f2df]"
             >
-              Confirm Starting Scope
+              Approve Starting Scope
               <ArrowRight size={18} />
             </button>
           </div>
@@ -744,7 +629,8 @@ export default function Home() {
                 <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#27f2df]">Digital Approval</p>
                 <h2 className="mt-2 text-3xl font-semibold text-white">Confirm selected scope</h2>
                 <p className="mt-2 text-sm leading-6 text-[#a9bdc0]">
-                  This creates a signed approval email with the selected services and monthly total.
+                  This saves the signed proposal and emails both sides. Billing and payment happen later inside the
+                  client portal.
                 </p>
               </div>
               <button
@@ -830,19 +716,11 @@ export default function Home() {
               />
             </label>
 
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              <button
-                type="button"
-                onClick={produceInvoice}
-                disabled={sendState === "sending"}
-                className="h-12 rounded-md border border-white/15 px-4 font-semibold text-white transition hover:border-[#27f2df]/60 hover:text-[#27f2df]"
-              >
-                Produce Invoice
-              </button>
+            <div className="mt-6">
               <button
                 type="submit"
                 disabled={sendState === "sending"}
-                className="h-12 rounded-md bg-[#27f2df] px-4 font-semibold text-[#041010] transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+                className="h-12 w-full rounded-md bg-[#27f2df] px-4 font-semibold text-[#041010] transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {sendState === "sending" ? "Sending..." : "Send Signed Approval"}
               </button>

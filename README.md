@@ -37,7 +37,7 @@ PROPOSAL_APPROVALS_TABLE=proposal_approvals
 
 Use `onboarding@resend.dev` for testing, or replace it with a verified Resend domain sender.
 
-Signed approvals are emailed to `PROPOSAL_TO_EMAIL` and the signer. They are also saved to Supabase before the email is sent so a future client portal can retrieve the approved scope by `approval_id`.
+Signed approvals are emailed to `PROPOSAL_TO_EMAIL` and the signer. They are also saved to Supabase before the email is sent so the client portal can retrieve the approved scope by `approval_id` after the client account is created.
 
 Create the Supabase table:
 
@@ -62,6 +62,8 @@ alter table public.proposal_approvals enable row level security;
 ```
 
 Do not expose `SUPABASE_SERVICE_ROLE_KEY` to the browser. A portal should read these records through authenticated server-side routes.
+
+Billing and payment are intentionally handled after approval inside the client portal, not from the proposal page.
 
 ## Production Check
 
