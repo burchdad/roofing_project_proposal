@@ -209,6 +209,58 @@ async function updateSignedProposalEmailId(approvalId: string, emailId?: string)
   `;
 }
 
+async function notifyMissionControlApproval({
+  approvalId,
+  signer,
+  selectedServices,
+  monthlyTotal,
+  signedAt,
+}: {
+  approvalId: string;
+  signer: Required<ProposalSignBody["signer"]>;
+  selectedServices: SelectedService[];
+  monthlyTotal: number;
+  signedAt: string;
+}) {
+  const endpoint =
+    process.env.MISSION_CONTROL_PROPOSAL_WEBHOOK_URL ||
+    "https://ghostmissioncontrol-production.up.railway.app/mission/client-portal/marketing-proposal-approval";
+  const secret = process.env.MISSION_CONTROL_PROPOSAL_WEBHOOK_SECRET || "";
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  if (secret) {
+    headers["x-ghost-webhook-secret"] = secret;
+  }
+
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      approvalId,
+      signer,
+      selectedServices,
+      monthlyTotal,
+      signedAt,
+    }),
+  });
+
+  const text = await response.text();
+  let payload: { ok?: boolean; error?: string; clientId?: string; inviteKey?: string } | null = null;
+  try {
+    payload = text ? JSON.parse(text) : null;
+  } catch {
+    payload = null;
+  }
+
+  if (!response.ok || !payload?.ok) {
+    throw new Error(payload?.error || text || "Unable to register approval with Mission Control.");
+  }
+
+  return payload;
+}
+
 export async function POST(request: Request) {
   const resendApiKey = process.env.RESEND_API_KEY;
   const proposalTo = process.env.PROPOSAL_TO_EMAIL || "hello@ghostaisolutions.com";
@@ -290,6 +342,27 @@ export async function POST(request: Request) {
     );
   }
 
+  let missionControl;
+  try {
+    missionControl = await notifyMissionControlApproval({
+      approvalId,
+      signer,
+      selectedServices,
+      monthlyTotal,
+      signedAt,
+    });
+  } catch (missionControlError) {
+    return NextResponse.json(
+      {
+        error:
+          missionControlError instanceof Error
+            ? missionControlError.message
+            : "Unable to register approval with Mission Control.",
+      },
+      { status: 502 },
+    );
+  }
+
   const resend = new Resend(resendApiKey);
   const html = signedProposalHtml({
     approvalId,
@@ -313,5 +386,5 @@ export async function POST(request: Request) {
 
   await updateSignedProposalEmailId(approvalId, data?.id);
 
-  return NextResponse.json({ id: data?.id, approvalId, monthlyTotal, stored: true });
+  return NextResponse.json({ id: data?.id, approvalId, monthlyTotal, stored: true, missionControl });
 }
