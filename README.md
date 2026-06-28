@@ -30,16 +30,16 @@ Create `.env.local` with:
 RESEND_API_KEY=re_your_resend_api_key
 PROPOSAL_TO_EMAIL=hello@ghostaisolutions.com
 PROPOSAL_FROM_EMAIL=Ghost AI Solutions <onboarding@resend.dev>
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=your_server_only_service_role_key
-PROPOSAL_APPROVALS_TABLE=proposal_approvals
+DATABASE_URL=postgres://user:password@host/database?sslmode=require
 ```
 
 Use `onboarding@resend.dev` for testing, or replace it with a verified Resend domain sender.
 
-Signed approvals are emailed to `PROPOSAL_TO_EMAIL` and the signer. They are also saved to Supabase before the email is sent so the client portal can retrieve the approved scope by `approval_id` after the client account is created.
+Signed approvals are emailed to `PROPOSAL_TO_EMAIL` and the signer. They are also saved to Neon before the email is sent so the client portal can retrieve the approved scope by `approval_id` after the client account is created.
 
-Create the Supabase table:
+When Neon is connected through Vercel, `DATABASE_URL` should already be available in the project environment. Add it locally only when testing proposal approval storage from your machine.
+
+The app creates the Neon table automatically on the first signed approval. To create it manually, use:
 
 ```sql
 create table if not exists public.proposal_approvals (
@@ -57,11 +57,9 @@ create table if not exists public.proposal_approvals (
   email_id text,
   created_at timestamptz not null default now()
 );
-
-alter table public.proposal_approvals enable row level security;
 ```
 
-Do not expose `SUPABASE_SERVICE_ROLE_KEY` to the browser. A portal should read these records through authenticated server-side routes.
+Do not expose `DATABASE_URL` to the browser. A portal should read these records through authenticated server-side routes.
 
 Billing and payment are intentionally handled after approval inside the client portal, not from the proposal page.
 
