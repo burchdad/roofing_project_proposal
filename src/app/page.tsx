@@ -127,7 +127,8 @@ const priorities: Priority[] = [
 ];
 
 const recommendedPaidCampaignAmount = 3300;
-const clientPortalUrl = process.env.NEXT_PUBLIC_CLIENT_PORTAL_URL || "/portal";
+const clientPortalCreateUrl = process.env.NEXT_PUBLIC_CLIENT_PORTAL_CREATE_URL || "/portal/create-account";
+const clientPortalSignInUrl = process.env.NEXT_PUBLIC_CLIENT_PORTAL_SIGN_IN_URL || "/portal/sign-in";
 
 const defaultPreferences: Record<string, Preference> = {
   photo: "want",
@@ -634,13 +635,21 @@ export default function Home() {
                 <p className="text-sm text-[#a9bdc0]">Approved monthly scope</p>
                 <p className="mt-2 font-mono text-4xl text-white">{formatCurrency(monthlyTotal)}</p>
               </div>
-              <a
-                href={clientPortalUrl}
-                className="mt-7 inline-flex h-12 w-full items-center justify-center gap-3 rounded-md bg-white px-4 font-semibold text-[#061013] transition hover:bg-[#27f2df]"
-              >
-                Create Your Client Portal Login
-                <ArrowRight size={18} />
-              </a>
+              <div className="mt-7 grid gap-3 sm:grid-cols-2">
+                <a
+                  href={clientPortalCreateUrl}
+                  className="inline-flex h-12 items-center justify-center gap-3 rounded-md bg-white px-4 font-semibold text-[#061013] transition hover:bg-[#27f2df]"
+                >
+                  Create Account
+                  <ArrowRight size={18} />
+                </a>
+                <a
+                  href={clientPortalSignInUrl}
+                  className="inline-flex h-12 items-center justify-center rounded-md border border-white/15 px-4 font-semibold text-white transition hover:border-[#27f2df]/60 hover:text-[#27f2df]"
+                >
+                  Sign In
+                </a>
+              </div>
               <button
                 type="button"
                 onClick={() => setIsSigning(false)}
