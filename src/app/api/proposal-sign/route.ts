@@ -45,6 +45,11 @@ const servicePrices: Record<string, { title: string; price: number }> = {
   reporting: { title: "Reporting", price: 400 },
 };
 
+function normalizePaidCampaignPrice(price: number) {
+  if (!Number.isFinite(price)) return servicePrices.ads.price;
+  return Math.max(0, Math.min(50000, Math.round(price)));
+}
+
 function formatCurrency(amount: number) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -216,7 +221,10 @@ export async function POST(request: Request) {
   const selectedServices = (body.selectedServices || [])
     .map((service) => {
       const source = servicePrices[service.id];
-      return source ? { id: service.id, title: source.title, price: source.price } : null;
+      if (!source) return null;
+
+      const price = service.id === "ads" ? normalizePaidCampaignPrice(service.price) : source.price;
+      return { id: service.id, title: source.title, price };
     })
     .filter((service): service is SelectedService => Boolean(service));
 

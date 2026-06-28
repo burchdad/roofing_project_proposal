@@ -126,6 +126,8 @@ const priorities: Priority[] = [
   },
 ];
 
+const recommendedPaidCampaignAmount = 3300;
+
 const defaultPreferences: Record<string, Preference> = {
   photo: "want",
   video: "want",
@@ -206,6 +208,7 @@ function SectionHeading({
 
 export default function Home() {
   const [preferences, setPreferences] = useState<Record<string, Preference>>(defaultPreferences);
+  const [paidCampaignAmount, setPaidCampaignAmount] = useState(String(recommendedPaidCampaignAmount));
   const [isSigning, setIsSigning] = useState(false);
   const [signForm, setSignForm] = useState<SignForm>({
     name: "",
@@ -220,14 +223,22 @@ export default function Home() {
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 24, mass: 0.2 });
 
-  const wanted = useMemo(
-    () => priorities.filter((priority) => preferences[priority.id] === "want"),
-    [preferences],
+  const paidCampaignBudget = useMemo(() => {
+    const parsed = Number(paidCampaignAmount);
+    return Number.isFinite(parsed) ? Math.max(0, Math.round(parsed)) : 0;
+  }, [paidCampaignAmount]);
+
+  const pricedPriorities = useMemo(
+    () =>
+      priorities.map((priority) =>
+        priority.id === "ads" ? { ...priority, price: paidCampaignBudget } : priority,
+      ),
+    [paidCampaignBudget],
   );
 
-  const passed = useMemo(
-    () => priorities.filter((priority) => preferences[priority.id] === "pass"),
-    [preferences],
+  const wanted = useMemo(
+    () => pricedPriorities.filter((priority) => preferences[priority.id] === "want"),
+    [preferences, pricedPriorities],
   );
 
   const monthlyTotal = useMemo(
@@ -378,7 +389,7 @@ export default function Home() {
                   <span className="text-center">Want</span>
                   <span className="text-center">Not now</span>
                 </div>
-                {priorities.map((priority) => {
+                {pricedPriorities.map((priority) => {
                   const Icon = priority.icon;
                   return (
                     <div
@@ -392,7 +403,28 @@ export default function Home() {
                         <div className="min-w-0">
                           <p className="truncate font-medium text-white">{priority.title}</p>
                           <p className="mt-1 text-sm text-[#8aa1a4]">{priority.short}</p>
-                          <p className="mt-2 font-mono text-xs text-[#27f2df]">{formatCurrency(priority.price)}/mo</p>
+                          {priority.id === "ads" ? (
+                            <div className="mt-3 grid gap-2 sm:grid-cols-[auto_132px] sm:items-center">
+                              <p className="font-mono text-xs text-[#27f2df]">
+                                Recommended {formatCurrency(recommendedPaidCampaignAmount)}/mo
+                              </p>
+                              <label className="flex h-9 items-center rounded-md border border-[#27f2df]/25 bg-black/30 px-2 focus-within:border-[#27f2df]">
+                                <span className="font-mono text-xs text-[#8aa1a4]">$</span>
+                                <input
+                                  type="number"
+                                  min="0"
+                                  step="50"
+                                  value={paidCampaignAmount}
+                                  onChange={(event) => setPaidCampaignAmount(event.target.value)}
+                                  className="h-full min-w-0 flex-1 bg-transparent pl-1 font-mono text-xs text-white outline-none"
+                                  aria-label="Custom paid campaigns monthly amount"
+                                />
+                                <span className="font-mono text-xs text-[#8aa1a4]">/mo</span>
+                              </label>
+                            </div>
+                          ) : (
+                            <p className="mt-2 font-mono text-xs text-[#27f2df]">{formatCurrency(priority.price)}/mo</p>
+                          )}
                         </div>
                       </div>
                       {(["want", "pass"] as Preference[]).map((preference) => (
@@ -462,14 +494,6 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-              {passed.length > 0 ? (
-                <div className="mt-7 border-t border-white/10 pt-5">
-                  <p className="text-sm font-medium text-white">Not prioritized right now</p>
-                  <p className="mt-2 text-sm leading-6 text-[#8aa1a4]">
-                    {passed.map((item) => item.title).join(", ")}
-                  </p>
-                </div>
-              ) : null}
             </aside>
           </Reveal>
         </div>
@@ -546,18 +570,10 @@ export default function Home() {
                 <p className="text-6xl font-semibold text-white">{formatCurrency(monthlyTotal)}</p>
                 <p className="pb-2 text-[#a9bdc0]">/ month</p>
               </div>
-              <div className="mt-7 rounded-md border border-[#27f2df]/25 bg-[#27f2df]/10 p-4">
-                <p className="font-medium text-white">
-                  {wanted.some((item) => item.id === "ads") ? "Advertising spend included." : "Paid campaigns are not selected."}
-                </p>
-                <p className="mt-2 text-sm leading-6 text-[#a9bdc0]">
-                  Your total updates as services are added or removed from the starting scope.
-                </p>
-              </div>
               <button
                 type="button"
                 onClick={() => setIsSigning(true)}
-                className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-md bg-white px-4 font-semibold text-[#061013] transition hover:bg-[#27f2df]"
+                className="mt-7 inline-flex h-12 w-full items-center justify-center rounded-md bg-white px-4 font-semibold text-[#061013] transition hover:bg-[#27f2df]"
               >
                 Approve Proposal
               </button>
@@ -589,30 +605,6 @@ export default function Home() {
             </div>
           </Reveal>
         </div>
-      </section>
-
-      <section className="relative flex min-h-[76vh] items-center px-5 py-24">
-        <div className="absolute inset-x-0 top-1/4 h-72 bg-[#27f2df]/10 blur-3xl" />
-        <Reveal>
-          <div className="relative mx-auto max-w-4xl text-center">
-            <p className="font-mono text-xs uppercase tracking-[0.28em] text-[#27f2df]">Next Step</p>
-            <h2 className="mt-5 text-4xl font-semibold leading-tight text-white md:text-7xl">
-              Approve the starting scope, then launch from your client portal.
-            </h2>
-            <p className="mx-auto mt-7 max-w-2xl text-lg leading-8 text-[#b8cacc]">
-              Once this proposal is approved, Ghost creates your client portal for onboarding, billing, payment, and
-              project management.
-            </p>
-            <button
-              type="button"
-              onClick={() => setIsSigning(true)}
-              className="mt-10 inline-flex h-14 items-center justify-center gap-3 rounded-md bg-white px-6 font-semibold text-[#061013] transition hover:bg-[#27f2df]"
-            >
-              Approve Starting Scope
-              <ArrowRight size={18} />
-            </button>
-          </div>
-        </Reveal>
       </section>
 
       {isSigning ? (
