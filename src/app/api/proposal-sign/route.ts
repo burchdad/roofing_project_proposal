@@ -37,11 +37,11 @@ const servicePrices: Record<string, { title: string; price: number }> = {
   photo: { title: "Photography", price: 1250 },
   video: { title: "Videography", price: 1750 },
   drone: { title: "Drone Capture", price: 1250 },
-  local: { title: "Local Search", price: 1100 },
-  ads: { title: "Paid Campaigns", price: 2200 },
+  local: { title: "Local Search", price: 150 },
+  ads: { title: "Paid Campaigns", price: 3300 },
   social: { title: "Social Distribution", price: 900 },
   reviews: { title: "Reputation Proof", price: 650 },
-  geo: { title: "AI Search Visibility", price: 650 },
+  geo: { title: "AI Search Visibility", price: 150 },
   reporting: { title: "Reporting", price: 400 },
 };
 
