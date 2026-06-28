@@ -31,11 +31,14 @@ RESEND_API_KEY=re_your_resend_api_key
 PROPOSAL_TO_EMAIL=hello@ghostaisolutions.com
 PROPOSAL_FROM_EMAIL=Ghost AI Solutions <onboarding@resend.dev>
 DATABASE_URL=postgres://user:password@host/database?sslmode=require
+NEXT_PUBLIC_CLIENT_PORTAL_URL=https://your-client-portal.example.com/signup
 ```
 
 Use `onboarding@resend.dev` for testing, or replace it with a verified Resend domain sender.
 
 Signed approvals are emailed to `PROPOSAL_TO_EMAIL` and the signer. They are also saved to Neon before the email is sent so the client portal can retrieve the approved scope by `approval_id` after the client account is created.
+
+After approval, the thank-you screen links to `NEXT_PUBLIC_CLIENT_PORTAL_URL` so the client can create or access their Ghost client portal login. If it is not set, the button falls back to `/portal`.
 
 When Neon is connected through Vercel, `DATABASE_URL` should already be available in the project environment. Add it locally only when testing proposal approval storage from your machine.
 

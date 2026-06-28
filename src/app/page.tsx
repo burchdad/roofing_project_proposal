@@ -127,6 +127,7 @@ const priorities: Priority[] = [
 ];
 
 const recommendedPaidCampaignAmount = 3300;
+const clientPortalUrl = process.env.NEXT_PUBLIC_CLIENT_PORTAL_URL || "/portal";
 
 const defaultPreferences: Record<string, Preference> = {
   photo: "want",
@@ -262,6 +263,12 @@ export default function Home() {
     setSignForm((current) => ({ ...current, [field]: value }));
   }
 
+  function openSigning() {
+    setSendState("idle");
+    setSendMessage("");
+    setIsSigning(true);
+  }
+
   async function sendSignedProposal(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSendState("idle");
@@ -299,9 +306,7 @@ export default function Home() {
       }
 
       setSendState("sent");
-      setSendMessage(
-        `Signed proposal saved and sent. Approval ID: ${result.approvalId || "created"}. Resend ID: ${result.id || "created"}.`,
-      );
+      setSendMessage("");
     } catch (error) {
       setSendState("error");
       setSendMessage(error instanceof Error ? error.message : "Unable to send signed proposal.");
@@ -572,7 +577,7 @@ export default function Home() {
               </div>
               <button
                 type="button"
-                onClick={() => setIsSigning(true)}
+                onClick={openSigning}
                 className="mt-7 inline-flex h-12 w-full items-center justify-center rounded-md bg-white px-4 font-semibold text-[#061013] transition hover:bg-[#27f2df]"
               >
                 Approve Proposal
@@ -609,126 +614,157 @@ export default function Home() {
 
       {isSigning ? (
         <div className="fixed inset-0 z-50 grid place-items-center bg-black/75 px-4 backdrop-blur-md">
-          <motion.form
-            initial={{ opacity: 0, scale: 0.96, y: 18 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.22, ease: "easeOut" }}
-            onSubmit={sendSignedProposal}
-            className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-lg border border-[#27f2df]/25 bg-[#071214] p-6 shadow-[0_30px_120px_rgba(0,0,0,0.55)]"
-          >
-            <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-5">
-              <div>
-                <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#27f2df]">Digital Approval</p>
-                <h2 className="mt-2 text-3xl font-semibold text-white">Confirm selected scope</h2>
-                <p className="mt-2 text-sm leading-6 text-[#a9bdc0]">
-                  This saves your signed proposal and emails a copy to you and Ghost. Billing and payment happen later
-                  inside your client portal.
-                </p>
+          {sendState === "sent" ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: 18 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
+              className="w-full max-w-2xl rounded-lg border border-[#27f2df]/25 bg-[#071214] p-8 text-center shadow-[0_30px_120px_rgba(0,0,0,0.55)]"
+            >
+              <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-[#27f2df] text-[#041010]">
+                <Check size={30} />
+              </span>
+              <p className="mt-6 font-mono text-xs uppercase tracking-[0.24em] text-[#27f2df]">Proposal Approved</p>
+              <h2 className="mt-3 text-4xl font-semibold leading-tight text-white">Thank you. Your scope is confirmed.</h2>
+              <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#a9bdc0]">
+                A signed copy has been emailed to you and Ghost AI Solutions. Your invoice will be sent out soon, and
+                we will create your client portal for onboarding, billing, and project next steps.
+              </p>
+              <div className="mt-7 rounded-md border border-white/10 bg-black/20 p-4">
+                <p className="text-sm text-[#a9bdc0]">Approved monthly scope</p>
+                <p className="mt-2 font-mono text-4xl text-white">{formatCurrency(monthlyTotal)}</p>
               </div>
+              <a
+                href={clientPortalUrl}
+                className="mt-7 inline-flex h-12 w-full items-center justify-center gap-3 rounded-md bg-white px-4 font-semibold text-[#061013] transition hover:bg-[#27f2df]"
+              >
+                Create Your Client Portal Login
+                <ArrowRight size={18} />
+              </a>
               <button
                 type="button"
                 onClick={() => setIsSigning(false)}
-                className="rounded-md border border-white/10 px-3 py-2 text-sm text-[#a9bdc0] transition hover:text-white"
+                className="mt-3 inline-flex h-12 w-full items-center justify-center rounded-md border border-white/15 px-4 font-semibold text-white transition hover:border-[#27f2df]/60 hover:text-[#27f2df]"
               >
                 Close
               </button>
-            </div>
-
-            <div className="mt-5 rounded-md border border-white/10 bg-black/20 p-4">
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-sm text-[#a9bdc0]">Monthly total</span>
-                <span className="font-mono text-2xl text-white">{formatCurrency(monthlyTotal)}</span>
+            </motion.div>
+          ) : (
+            <motion.form
+              initial={{ opacity: 0, scale: 0.96, y: 18 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
+              onSubmit={sendSignedProposal}
+              className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-lg border border-[#27f2df]/25 bg-[#071214] p-6 shadow-[0_30px_120px_rgba(0,0,0,0.55)]"
+            >
+              <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-5">
+                <div>
+                  <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#27f2df]">Digital Approval</p>
+                  <h2 className="mt-2 text-3xl font-semibold text-white">Confirm selected scope</h2>
+                  <p className="mt-2 text-sm leading-6 text-[#a9bdc0]">
+                    This saves your signed proposal and emails a copy to you and Ghost. Billing and payment happen later
+                    inside your client portal.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsSigning(false)}
+                  className="rounded-md border border-white/10 px-3 py-2 text-sm text-[#a9bdc0] transition hover:text-white"
+                >
+                  Close
+                </button>
               </div>
-              <div className="mt-4 grid gap-2 sm:grid-cols-2">
-                {wanted.map((item) => (
-                  <div key={item.id} className="flex justify-between gap-3 rounded-md bg-white/[0.035] px-3 py-2 text-sm">
-                    <span className="text-[#d7e6e8]">{item.title}</span>
-                    <span className="font-mono text-[#27f2df]">{formatCurrency(item.price)}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
 
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              <label className="grid gap-2">
-                <span className="text-sm font-medium text-white">Signer name</span>
+              <div className="mt-5 rounded-md border border-white/10 bg-black/20 p-4">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-sm text-[#a9bdc0]">Monthly total</span>
+                  <span className="font-mono text-2xl text-white">{formatCurrency(monthlyTotal)}</span>
+                </div>
+                <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                  {wanted.map((item) => (
+                    <div key={item.id} className="flex justify-between gap-3 rounded-md bg-white/[0.035] px-3 py-2 text-sm">
+                      <span className="text-[#d7e6e8]">{item.title}</span>
+                      <span className="font-mono text-[#27f2df]">{formatCurrency(item.price)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                <label className="grid gap-2">
+                  <span className="text-sm font-medium text-white">Signer name</span>
+                  <input
+                    value={signForm.name}
+                    onChange={(event) => updateSignForm("name", event.target.value)}
+                    className="h-11 rounded-md border border-white/10 bg-black/30 px-3 text-white outline-none transition focus:border-[#27f2df]"
+                    required
+                  />
+                </label>
+                <label className="grid gap-2">
+                  <span className="text-sm font-medium text-white">Signer email</span>
+                  <input
+                    type="email"
+                    value={signForm.email}
+                    onChange={(event) => updateSignForm("email", event.target.value)}
+                    className="h-11 rounded-md border border-white/10 bg-black/30 px-3 text-white outline-none transition focus:border-[#27f2df]"
+                    required
+                  />
+                </label>
+                <label className="grid gap-2">
+                  <span className="text-sm font-medium text-white">Title</span>
+                  <input
+                    value={signForm.title}
+                    onChange={(event) => updateSignForm("title", event.target.value)}
+                    className="h-11 rounded-md border border-white/10 bg-black/30 px-3 text-white outline-none transition focus:border-[#27f2df]"
+                  />
+                </label>
+                <label className="grid gap-2">
+                  <span className="text-sm font-medium text-white">Company</span>
+                  <input
+                    value={signForm.company}
+                    onChange={(event) => updateSignForm("company", event.target.value)}
+                    className="h-11 rounded-md border border-white/10 bg-black/30 px-3 text-white outline-none transition focus:border-[#27f2df]"
+                  />
+                </label>
+              </div>
+
+              <label className="mt-4 grid gap-2">
+                <span className="text-sm font-medium text-white">Typed signature</span>
                 <input
-                  value={signForm.name}
-                  onChange={(event) => updateSignForm("name", event.target.value)}
-                  className="h-11 rounded-md border border-white/10 bg-black/30 px-3 text-white outline-none transition focus:border-[#27f2df]"
+                  value={signForm.signature}
+                  onChange={(event) => updateSignForm("signature", event.target.value)}
+                  placeholder="Type full legal name"
+                  className="h-12 rounded-md border border-white/10 bg-black/30 px-3 text-white outline-none transition focus:border-[#27f2df]"
                   required
                 />
               </label>
-              <label className="grid gap-2">
-                <span className="text-sm font-medium text-white">Signer email</span>
-                <input
-                  type="email"
-                  value={signForm.email}
-                  onChange={(event) => updateSignForm("email", event.target.value)}
-                  className="h-11 rounded-md border border-white/10 bg-black/30 px-3 text-white outline-none transition focus:border-[#27f2df]"
-                  required
+
+              <label className="mt-4 grid gap-2">
+                <span className="text-sm font-medium text-white">Notes or requested adjustments</span>
+                <textarea
+                  value={signForm.notes}
+                  onChange={(event) => updateSignForm("notes", event.target.value)}
+                  rows={3}
+                  className="rounded-md border border-white/10 bg-black/30 px-3 py-3 text-white outline-none transition focus:border-[#27f2df]"
                 />
               </label>
-              <label className="grid gap-2">
-                <span className="text-sm font-medium text-white">Title</span>
-                <input
-                  value={signForm.title}
-                  onChange={(event) => updateSignForm("title", event.target.value)}
-                  className="h-11 rounded-md border border-white/10 bg-black/30 px-3 text-white outline-none transition focus:border-[#27f2df]"
-                />
-              </label>
-              <label className="grid gap-2">
-                <span className="text-sm font-medium text-white">Company</span>
-                <input
-                  value={signForm.company}
-                  onChange={(event) => updateSignForm("company", event.target.value)}
-                  className="h-11 rounded-md border border-white/10 bg-black/30 px-3 text-white outline-none transition focus:border-[#27f2df]"
-                />
-              </label>
-            </div>
 
-            <label className="mt-4 grid gap-2">
-              <span className="text-sm font-medium text-white">Typed signature</span>
-              <input
-                value={signForm.signature}
-                onChange={(event) => updateSignForm("signature", event.target.value)}
-                placeholder="Type full legal name"
-                className="h-12 rounded-md border border-white/10 bg-black/30 px-3 text-white outline-none transition focus:border-[#27f2df]"
-                required
-              />
-            </label>
-
-            <label className="mt-4 grid gap-2">
-              <span className="text-sm font-medium text-white">Notes or requested adjustments</span>
-              <textarea
-                value={signForm.notes}
-                onChange={(event) => updateSignForm("notes", event.target.value)}
-                rows={3}
-                className="rounded-md border border-white/10 bg-black/30 px-3 py-3 text-white outline-none transition focus:border-[#27f2df]"
-              />
-            </label>
-
-            <div className="mt-6">
-              <button
-                type="submit"
-                disabled={sendState === "sending"}
-                className="h-12 w-full rounded-md bg-[#27f2df] px-4 font-semibold text-[#041010] transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {sendState === "sending" ? "Sending..." : "Approve Selected Scope"}
-              </button>
-            </div>
-            {sendMessage ? (
-              <div
-                className={`mt-4 rounded-md border p-4 text-sm ${
-                  sendState === "sent"
-                    ? "border-[#27f2df]/35 bg-[#27f2df]/10 text-[#d7fffb]"
-                    : "border-red-400/35 bg-red-500/10 text-red-100"
-                }`}
-              >
-                {sendMessage}
+              <div className="mt-6">
+                <button
+                  type="submit"
+                  disabled={sendState === "sending"}
+                  className="h-12 w-full rounded-md bg-[#27f2df] px-4 font-semibold text-[#041010] transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {sendState === "sending" ? "Sending..." : "Approve Selected Scope"}
+                </button>
               </div>
-            ) : null}
-          </motion.form>
+              {sendMessage ? (
+                <div className="mt-4 rounded-md border border-red-400/35 bg-red-500/10 p-4 text-sm text-red-100">
+                  {sendMessage}
+                </div>
+              ) : null}
+            </motion.form>
+          )}
         </div>
       ) : null}
     </main>
