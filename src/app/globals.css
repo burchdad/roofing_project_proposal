@@ -24,6 +24,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
 }
 
 body {
@@ -94,8 +95,31 @@ body::before {
   padding: 7rem 1.25rem;
 }
 
+input,
+textarea,
+select,
+button {
+  font: inherit;
+}
+
 @media (max-width: 768px) {
   .section-pad {
     padding: 5rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  body::before {
+    background-size: 48px 48px;
+  }
+
+  .section-pad {
+    padding: 4rem 0.875rem;
+  }
+
+  input,
+  textarea,
+  select {
+    font-size: 16px;
   }
 }

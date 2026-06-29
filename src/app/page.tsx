@@ -338,10 +338,10 @@ export default function Home() {
     <main className="proposal-shell">
       <motion.div className="fixed left-0 top-0 z-50 h-1 origin-left bg-[#27f2df]" style={{ scaleX: progress }} />
 
-      <nav className="fixed left-0 right-0 top-0 z-40 px-4 py-4">
-        <div className="mx-auto flex max-w-7xl items-center justify-between rounded-lg border border-white/10 bg-[#031010]/75 px-4 py-3 shadow-2xl shadow-black/30 backdrop-blur-xl">
+      <nav className="fixed left-0 right-0 top-0 z-40 px-3 py-3 sm:px-4 sm:py-4">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 rounded-lg border border-white/10 bg-[#031010]/85 px-3 py-3 shadow-2xl shadow-black/30 backdrop-blur-xl sm:px-4">
           <a href="#top" className="flex items-center gap-3" aria-label="Ghost AI Solutions proposal top">
-            <span className="relative h-10 w-10 overflow-hidden rounded-md border border-[#27f2df]/45 bg-black">
+            <span className="relative h-9 w-9 shrink-0 overflow-hidden rounded-md border border-[#27f2df]/45 bg-black sm:h-10 sm:w-10">
               <Image src="/ghost-ai-logo.png" alt="" fill sizes="40px" className="object-cover" />
             </span>
             <span className="hidden text-sm font-medium text-white sm:inline">Ghost AI Solutions</span>
@@ -355,38 +355,39 @@ export default function Home() {
           </div>
           <a
             href="#investment"
-            className="inline-flex h-10 items-center gap-2 rounded-md bg-white px-4 text-sm font-semibold text-[#061013] transition hover:bg-[#27f2df]"
+            className="inline-flex h-10 shrink-0 items-center gap-2 rounded-md bg-white px-3 text-sm font-semibold text-[#061013] transition hover:bg-[#27f2df] sm:px-4"
           >
-            Review Scope
+            <span className="sm:hidden">Review</span>
+            <span className="hidden sm:inline">Review Scope</span>
             <ArrowRight size={16} />
           </a>
         </div>
       </nav>
 
-      <section id="top" className="relative min-h-screen px-5 pb-20 pt-28">
+      <section id="top" className="relative px-4 pb-14 pt-24 sm:px-5 sm:pb-20 sm:pt-28 lg:min-h-screen">
         <div className="absolute inset-x-0 top-0 h-[38rem] bg-[radial-gradient(circle_at_50%_10%,rgba(39,242,223,0.2),transparent_44%)]" />
-        <div className="mx-auto grid min-h-[calc(100vh-7rem)] max-w-7xl items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 lg:min-h-[calc(100vh-7rem)] lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
           <Reveal>
             <div className="relative">
               <p className="font-mono text-xs uppercase tracking-[0.28em] text-[#27f2df]">
                 Project One Roofing proposal
               </p>
-              <h1 className="mt-7 max-w-4xl text-5xl font-semibold leading-[1.03] text-white md:text-7xl">
+              <h1 className="mt-6 max-w-4xl text-4xl font-semibold leading-[1.03] text-white sm:text-5xl md:text-7xl">
                 Choose the growth support that matches your priorities.
               </h1>
-              <p className="mt-7 max-w-2xl text-lg leading-8 text-[#b8cacc]">
+              <p className="mt-6 max-w-2xl text-base leading-7 text-[#b8cacc] sm:text-lg sm:leading-8">
                 Your sales team is already in place. Your tech team is already in place. Ghost fills the gap around
                 premium field capture, trust-building proof, distribution, and campaign support.
               </p>
-              <div className="mt-10 grid max-w-2xl gap-3 sm:grid-cols-3">
+              <div className="mt-8 grid max-w-2xl grid-cols-3 gap-2 sm:mt-10 sm:gap-3">
                 {[
                   [formatCurrency(monthlyTotal), "monthly total"],
                   [wanted.some((item) => item.id === "ads") ? "Included" : "Optional", "ad spend"],
                   [`${wanted.length}`, "active priorities"],
                 ].map(([value, label]) => (
-                  <div key={label} className="rounded-lg border border-white/10 bg-white/[0.04] p-4">
-                    <p className="font-mono text-2xl text-white">{value}</p>
-                    <p className="mt-1 text-sm text-[#8aa1a4]">{label}</p>
+                  <div key={label} className="rounded-lg border border-white/10 bg-white/[0.04] p-3 sm:p-4">
+                    <p className="break-words font-mono text-lg text-white sm:text-2xl">{value}</p>
+                    <p className="mt-1 text-xs leading-4 text-[#8aa1a4] sm:text-sm">{label}</p>
                   </div>
                 ))}
               </div>
@@ -410,7 +411,7 @@ export default function Home() {
               </div>
 
               <div className="mt-5 grid gap-3">
-                <div className="grid grid-cols-[1fr_82px_82px] gap-2 px-3 font-mono text-[11px] uppercase tracking-[0.18em] text-[#8aa1a4]">
+                <div className="hidden grid-cols-[minmax(0,1fr)_82px_82px] gap-2 px-3 font-mono text-[11px] uppercase tracking-[0.18em] text-[#8aa1a4] sm:grid">
                   <span>Priority</span>
                   <span className="text-center">Want</span>
                   <span className="text-center">Not now</span>
@@ -420,7 +421,7 @@ export default function Home() {
                   return (
                     <div
                       key={priority.id}
-                      className="grid grid-cols-[1fr_82px_82px] items-center gap-2 rounded-lg border border-white/10 bg-black/18 p-3 transition hover:border-[#27f2df]/40"
+                      className="grid grid-cols-1 gap-3 rounded-lg border border-white/10 bg-black/18 p-3 transition hover:border-[#27f2df]/40 sm:grid-cols-[minmax(0,1fr)_82px_82px] sm:items-center sm:gap-2"
                     >
                       <div className="flex min-w-0 items-center gap-3">
                         <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-[#27f2df]/10 text-[#27f2df]">
@@ -456,7 +457,7 @@ export default function Home() {
                       {(["want", "pass"] as Preference[]).map((preference) => (
                         <label
                           key={preference}
-                          className="grid h-11 cursor-pointer place-items-center rounded-md border border-white/10 bg-white/[0.03] transition hover:border-[#27f2df]/50"
+                          className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-md border border-white/10 bg-white/[0.03] transition hover:border-[#27f2df]/50 sm:grid sm:place-items-center"
                         >
                           <input
                             type="checkbox"
@@ -465,6 +466,9 @@ export default function Home() {
                             onChange={() => setPreference(priority.id, preference)}
                             aria-label={`${priority.title} ${preference === "want" ? "wanted" : "not now"}`}
                           />
+                          <span className="text-xs font-semibold text-[#d7e6e8] sm:hidden">
+                            {preference === "want" ? "Want" : "Not now"}
+                          </span>
                         </label>
                       ))}
                     </div>
@@ -507,9 +511,9 @@ export default function Home() {
           </Reveal>
 
           <Reveal delay={0.08}>
-            <aside className="sticky top-28 rounded-lg border border-[#27f2df]/25 bg-[#061314] p-6 shadow-[0_0_80px_rgba(39,242,223,0.1)]">
+            <aside className="rounded-lg border border-[#27f2df]/25 bg-[#061314] p-5 shadow-[0_0_80px_rgba(39,242,223,0.1)] sm:p-6 lg:sticky lg:top-28">
               <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#27f2df]">Why This Works</p>
-              <h3 className="mt-3 text-3xl font-semibold leading-tight text-white">
+              <h3 className="mt-3 text-2xl font-semibold leading-tight text-white sm:text-3xl">
                 Built around proof, not tools you already have.
               </h3>
               <div className="mt-7 grid gap-4">
@@ -592,8 +596,8 @@ export default function Home() {
                   <p className="text-xl font-semibold text-white">Creative capture + amplification</p>
                 </div>
               </div>
-              <div className="mt-10 flex items-end gap-3">
-                <p className="text-6xl font-semibold text-white">{formatCurrency(monthlyTotal)}</p>
+              <div className="mt-8 flex flex-wrap items-end gap-2 sm:mt-10 sm:gap-3">
+                <p className="text-5xl font-semibold text-white sm:text-6xl">{formatCurrency(monthlyTotal)}</p>
                 <p className="pb-2 text-[#a9bdc0]">/ month</p>
               </div>
               <button
@@ -633,7 +637,7 @@ export default function Home() {
           </Reveal>
         </div>
 
-        <div id="documents" className="mx-auto mt-8 max-w-6xl rounded-lg border border-white/10 bg-white/[0.035] p-6">
+        <div id="documents" className="mx-auto mt-8 max-w-6xl scroll-mt-24 rounded-lg border border-white/10 bg-white/[0.035] p-5 sm:p-6">
           <div className="flex flex-col gap-3 border-b border-white/10 pb-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#27f2df]">Proposal Documents</p>
@@ -663,26 +667,26 @@ export default function Home() {
       </section>
 
       {isSigning ? (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/75 px-4 backdrop-blur-md">
+        <div className="fixed inset-0 z-50 grid items-end bg-black/75 px-3 pb-3 pt-16 backdrop-blur-md sm:place-items-center sm:p-4">
           {sendState === "sent" ? (
             <motion.div
               initial={{ opacity: 0, scale: 0.96, y: 18 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.22, ease: "easeOut" }}
-              className="w-full max-w-2xl rounded-lg border border-[#27f2df]/25 bg-[#071214] p-8 text-center shadow-[0_30px_120px_rgba(0,0,0,0.55)]"
+              className="max-h-[88dvh] w-full max-w-2xl overflow-y-auto rounded-lg border border-[#27f2df]/25 bg-[#071214] p-5 text-center shadow-[0_30px_120px_rgba(0,0,0,0.55)] sm:p-8"
             >
               <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-[#27f2df] text-[#041010]">
                 <Check size={30} />
               </span>
               <p className="mt-6 font-mono text-xs uppercase tracking-[0.24em] text-[#27f2df]">Proposal Approved</p>
-              <h2 className="mt-3 text-4xl font-semibold leading-tight text-white">Thank you. Your scope is confirmed.</h2>
+              <h2 className="mt-3 text-3xl font-semibold leading-tight text-white sm:text-4xl">Thank you. Your scope is confirmed.</h2>
               <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#a9bdc0]">
                 A signed copy has been emailed to you and Ghost AI Solutions. Your invoice will be sent out soon, and
                 you can create or access your client portal for onboarding, billing, and project next steps.
               </p>
               <div className="mt-7 rounded-md border border-white/10 bg-black/20 p-4">
                 <p className="text-sm text-[#a9bdc0]">Approved monthly scope</p>
-                <p className="mt-2 font-mono text-4xl text-white">{formatCurrency(monthlyTotal)}</p>
+                <p className="mt-2 break-words font-mono text-3xl text-white sm:text-4xl">{formatCurrency(monthlyTotal)}</p>
               </div>
               <div className="mt-7 grid gap-3 sm:grid-cols-2">
                 <a
@@ -713,12 +717,12 @@ export default function Home() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.22, ease: "easeOut" }}
               onSubmit={sendSignedProposal}
-              className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-lg border border-[#27f2df]/25 bg-[#071214] p-6 shadow-[0_30px_120px_rgba(0,0,0,0.55)]"
+              className="max-h-[88dvh] w-full max-w-2xl overflow-y-auto rounded-lg border border-[#27f2df]/25 bg-[#071214] p-4 shadow-[0_30px_120px_rgba(0,0,0,0.55)] sm:max-h-[92vh] sm:p-6"
             >
-              <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-5">
+              <div className="flex flex-col gap-4 border-b border-white/10 pb-5 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#27f2df]">Digital Approval</p>
-                  <h2 className="mt-2 text-3xl font-semibold text-white">Confirm selected scope</h2>
+                  <h2 className="mt-2 text-2xl font-semibold text-white sm:text-3xl">Confirm selected scope</h2>
                   <p className="mt-2 text-sm leading-6 text-[#a9bdc0]">
                     This saves your signed proposal and emails a copy to you and Ghost. Billing and payment happen later
                     inside your client portal. Your approval includes the linked proposal documents.
@@ -727,7 +731,7 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={() => setIsSigning(false)}
-                  className="rounded-md border border-white/10 px-3 py-2 text-sm text-[#a9bdc0] transition hover:text-white"
+                  className="w-fit rounded-md border border-white/10 px-3 py-2 text-sm text-[#a9bdc0] transition hover:text-white"
                 >
                   Close
                 </button>
@@ -736,7 +740,7 @@ export default function Home() {
               <div className="mt-5 rounded-md border border-white/10 bg-black/20 p-4">
                 <div className="flex items-center justify-between gap-4">
                   <span className="text-sm text-[#a9bdc0]">Monthly total</span>
-                  <span className="font-mono text-2xl text-white">{formatCurrency(monthlyTotal)}</span>
+                  <span className="font-mono text-xl text-white sm:text-2xl">{formatCurrency(monthlyTotal)}</span>
                 </div>
                 <div className="mt-4 grid gap-2 sm:grid-cols-2">
                   {wanted.map((item) => (
