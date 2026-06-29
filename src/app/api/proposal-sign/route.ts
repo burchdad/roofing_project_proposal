@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { neon } from "@neondatabase/serverless";
 import { Resend } from "resend";
+import { absoluteProposalDocUrl, proposalDocs, type ProposalDoc } from "@/lib/proposalDocs";
 
 type SelectedService = {
   id: string;
@@ -68,18 +69,57 @@ function escapeHtml(value: string) {
     .replace(/'/g, "&#039;");
 }
 
+function renderProposalDocHtml(doc: ProposalDoc, baseUrl: string) {
+  const sections = doc.sections
+    .map(
+      (section) => `
+        <section style="border: 1px solid #d9e5e5; padding: 18px; margin-top: 16px;">
+          <h2 style="margin: 0 0 10px; color: #061314; font-size: 18px;">${escapeHtml(section.heading)}</h2>
+          ${section.body
+            .map((paragraph) => `<p style="color: #536366; line-height: 1.6; margin: 12px 0 0;">${escapeHtml(paragraph)}</p>`)
+            .join("")}
+        </section>
+      `,
+    )
+    .join("");
+
+  return `<!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>${escapeHtml(doc.title)} - Project One Roofing Proposal</title>
+      </head>
+      <body style="margin: 0; background: #f4f8f8; font-family: Arial, sans-serif; color: #061314;">
+        <main style="max-width: 760px; margin: 0 auto; padding: 32px 20px;">
+          <div style="background: #ffffff; border: 1px solid #d9e5e5; padding: 32px;">
+            <p style="margin: 0 0 8px; color: #07877d; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;">Supporting Proposal Document</p>
+            <h1 style="margin: 0; color: #061314; font-size: 32px;">${escapeHtml(doc.title)}</h1>
+            <p style="color: #536366; line-height: 1.6;">${escapeHtml(doc.summary)}</p>
+            ${sections}
+            <p style="margin-top: 24px; color: #536366; line-height: 1.6;">
+              Online copy: <a href="${escapeHtml(absoluteProposalDocUrl(baseUrl, doc.slug))}">${escapeHtml(absoluteProposalDocUrl(baseUrl, doc.slug))}</a>
+            </p>
+          </div>
+        </main>
+      </body>
+    </html>`;
+}
+
 function signedProposalHtml({
   approvalId,
   signer,
   selectedServices,
   monthlyTotal,
   signedAt,
+  baseUrl,
 }: {
   approvalId: string;
   signer: Required<ProposalSignBody["signer"]>;
   selectedServices: SelectedService[];
   monthlyTotal: number;
   signedAt: string;
+  baseUrl: string;
 }) {
   const rows = selectedServices
     .map(
@@ -88,6 +128,16 @@ function signedProposalHtml({
           <td>${escapeHtml(service.title)}</td>
           <td>${formatCurrency(service.price)}/month</td>
         </tr>
+      `,
+    )
+    .join("");
+  const docLinks = proposalDocs
+    .map(
+      (doc) => `
+        <li>
+          <a href="${escapeHtml(absoluteProposalDocUrl(baseUrl, doc.slug))}" style="color: #07877d;">${escapeHtml(doc.title)}</a>
+          <span style="color: #536366;"> - ${escapeHtml(doc.summary)}</span>
+        </li>
       `,
     )
     .join("");
@@ -131,6 +181,12 @@ function signedProposalHtml({
 
         <h2 style="margin-top: 28px; color: #061314; font-size: 18px;">Notes</h2>
         <p style="color: #536366; line-height: 1.6;">${escapeHtml(signer.notes || "None")}</p>
+
+        <h2 style="margin-top: 28px; color: #061314; font-size: 18px;">Supporting Proposal Documents</h2>
+        <p style="color: #536366; line-height: 1.6;">
+          The signer had access to these supporting documents at approval. Copies are attached to this email.
+        </p>
+        <ul style="padding-left: 20px; color: #536366; line-height: 1.7;">${docLinks}</ul>
       </div>
     </div>
   `;
@@ -317,6 +373,8 @@ export async function POST(request: Request) {
     dateStyle: "full",
     timeStyle: "short",
   });
+  const requestOrigin = new URL(request.url).origin;
+  const proposalBaseUrl = process.env.NEXT_PUBLIC_PROPOSAL_BASE_URL || requestOrigin;
 
   const baseRecord: SignedProposalRecord = {
     approval_id: approvalId,
@@ -370,7 +428,13 @@ export async function POST(request: Request) {
     selectedServices,
     monthlyTotal,
     signedAt: signedAtDisplay,
+    baseUrl: proposalBaseUrl,
   });
+  const attachments = proposalDocs.map((doc) => ({
+    filename: doc.filename,
+    content: renderProposalDocHtml(doc, proposalBaseUrl),
+    contentType: "text/html",
+  }));
 
   const { data, error } = await resend.emails.send({
     from: proposalFrom,
@@ -378,6 +442,7 @@ export async function POST(request: Request) {
     replyTo: signer.email,
     subject: `Signed Project One Roofing Proposal - ${formatCurrency(monthlyTotal)}/mo`,
     html,
+    attachments,
   });
 
   if (error) {

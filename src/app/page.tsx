@@ -10,6 +10,7 @@ import {
   Camera,
   Check,
   CircleDollarSign,
+  FileText,
   Film,
   Globe2,
   MapPin,
@@ -18,6 +19,7 @@ import {
   ShieldCheck,
   Target,
 } from "lucide-react";
+import { proposalDocs } from "@/lib/proposalDocs";
 
 type Preference = "want" | "pass";
 
@@ -147,6 +149,7 @@ const navItems = [
   ["Scope", "#scope"],
   ["90 Days", "#roadmap"],
   ["Investment", "#investment"],
+  ["Docs", "#documents"],
 ];
 
 const roadmapBase = [
@@ -602,7 +605,8 @@ export default function Home() {
               </button>
               <p className="mt-4 text-sm leading-6 text-[#8aa1a4]">
                 Approval saves your selected scope and sends a copy to you and Ghost. Billing, payment, and onboarding
-                move into your client portal after acceptance.
+                move into your client portal after acceptance. Supporting proposal documents are linked below and included
+                with the signed email copy.
               </p>
             </div>
           </Reveal>
@@ -627,6 +631,34 @@ export default function Home() {
               </div>
             </div>
           </Reveal>
+        </div>
+
+        <div id="documents" className="mx-auto mt-8 max-w-6xl rounded-lg border border-white/10 bg-white/[0.035] p-6">
+          <div className="flex flex-col gap-3 border-b border-white/10 pb-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#27f2df]">Proposal Documents</p>
+              <h3 className="mt-2 text-2xl font-semibold text-white">Review the supporting terms before approval.</h3>
+            </div>
+            <p className="max-w-xl text-sm leading-6 text-[#a9bdc0]">
+              These pages clarify scope, billing, responsibilities, change requests, and service terms. A copy of each is
+              sent after signature.
+            </p>
+          </div>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            {proposalDocs.map((doc) => (
+              <a
+                key={doc.slug}
+                href={`/docs/${doc.slug}`}
+                className="group rounded-lg border border-white/10 bg-black/20 p-4 transition hover:border-[#27f2df]/50 hover:bg-[#27f2df]/10"
+              >
+                <span className="grid h-10 w-10 place-items-center rounded-md bg-[#27f2df]/10 text-[#27f2df]">
+                  <FileText size={18} />
+                </span>
+                <p className="mt-4 font-semibold text-white group-hover:text-[#27f2df]">{doc.shortTitle}</p>
+                <p className="mt-2 text-sm leading-6 text-[#8aa1a4]">{doc.summary}</p>
+              </a>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -689,7 +721,7 @@ export default function Home() {
                   <h2 className="mt-2 text-3xl font-semibold text-white">Confirm selected scope</h2>
                   <p className="mt-2 text-sm leading-6 text-[#a9bdc0]">
                     This saves your signed proposal and emails a copy to you and Ghost. Billing and payment happen later
-                    inside your client portal.
+                    inside your client portal. Your approval includes the linked proposal documents.
                   </p>
                 </div>
                 <button
@@ -764,6 +796,19 @@ export default function Home() {
                   required
                 />
               </label>
+
+              <div className="mt-4 rounded-md border border-white/10 bg-black/20 p-4 text-sm leading-6 text-[#a9bdc0]">
+                By approving, I confirm I am authorized to approve this selected scope and I have had access to the
+                supporting proposal documents:{" "}
+                {proposalDocs.map((doc, index) => (
+                  <span key={doc.slug}>
+                    <a className="font-semibold text-[#27f2df] underline-offset-4 hover:underline" href={`/docs/${doc.slug}`}>
+                      {doc.shortTitle}
+                    </a>
+                    {index < proposalDocs.length - 1 ? ", " : "."}
+                  </span>
+                ))}
+              </div>
 
               <label className="mt-4 grid gap-2">
                 <span className="text-sm font-medium text-white">Notes or requested adjustments</span>
